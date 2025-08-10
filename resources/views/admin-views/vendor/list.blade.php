@@ -160,7 +160,15 @@
                     <thead class="thead-light">
                     <tr>
                         <th class="border-0">{{translate('sl')}}</th>
+                        @if (Config::get('module.current_module_type')=='services')
+                        <th class="border-0">{{translate('messages.vendor_information')}}</th>
+                        @else
                         <th class="border-0">{{translate('messages.store_information')}}</th>
+                        @endif
+                        @if (Config::get('module.current_module_type')=='grocery')
+                        <th>{{ translate('messages.store_type') }}</th>
+                        @endif
+                        <th class="border-0">{{translate('messages.module')}}</th>
                         <th class="border-0">{{translate('messages.owner_information')}}</th>
                         <th class="border-0">{{translate('messages.zone')}}</th>
                         <th class="text-uppercase border-0">{{translate('messages.featured')}}</th>
@@ -176,12 +184,9 @@
                             <td>
                                 <div>
                                     <a href="{{route('admin.store.view', $store->id)}}" class="table-rest-info" alt="view store">
-                                    <img class="img--60 circle onerror-image" data-onerror-image="{{asset('public/assets/admin/img/160x160/img1.jpg')}}"
-
-                                            src="{{ $store['logo_full_url'] ?? asset('public/assets/admin/img/160x160/img1.jpg') }}"
-
-                                            >
-                                        <div class="info"><div title="{{ $store?->name }}" class="text--title">
+                                    <img class="img--60 circle" onerror="this.src='{{asset('public/assets/admin/img/160x160/img1.jpg')}}'"
+                                            src="{{asset('storage/app/public/store')}}/{{$store['logo']}}">
+                                        <div class="info"><div class="text--title">
                                             {{Str::limit($store->name,20,'...')}}
                                             </div>
                                             <div class="font-light">
@@ -190,6 +195,16 @@
                                         </div>
                                     </a>
                                 </div>
+                            </td>
+                            @if (Config::get('module.current_module_type')=='grocery')
+                            <td>
+                                <span class="badge badge-warning">{{ $store->type_one.' , '.$store->type_two }}</span>
+                            </td>
+                            @endif
+                            <td>
+                                <span class="d-block font-size-sm text-body">
+                                    {{Str::limit($store->module->module_name,20,'...')}}
+                                </span>
                             </td>
 
                             <td>

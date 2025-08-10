@@ -141,5 +141,10 @@ class Vendor extends Authenticatable
 
     }
 
+    public function vendor_type(){
+        $data = $this->hasOne(VendorType::class,'vendor_id','id')?$this->hasOne(VendorType::class,'vendor_id','id'):null;
+        return $data;
+    }
+
 
 }

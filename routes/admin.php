@@ -54,6 +54,16 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('edit/{id}', 'ItemController@edit')->name('edit');
             Route::post('update/{id}', 'ItemController@update')->name('update');
             Route::get('list', 'ItemController@list')->name('list');
+
+            /** Country Of Origin */
+            Route::get('country-origin', 'ItemController@countryorigin')->name('country-origin');
+            Route::post('country-origin', 'ItemController@countryoriginstore')->name('country-origin');
+
+            Route::get('country-origin/edit/{id}', 'ItemController@countryoriginedit')->name('country-origin-edit');
+            Route::post('country-origin/update/{id}', 'ItemController@countryoriginupdate')->name('country-origin-update');
+            Route::delete('country-origin/delete/{id}', 'ItemController@countryorigindelete')->name('country-origin-delete');
+
+
             Route::delete('delete/{id}', 'ItemController@delete')->name('delete');
             Route::get('status/{id}/{status}', 'ItemController@status')->name('status');
             Route::get('review-status/{id}/{status}', 'ItemController@reviews_status')->name('reviews.status');
@@ -75,6 +85,7 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
 
             //ajax request
             Route::get('get-categories', 'ItemController@get_categories')->name('get-categories');
+            Route::get('get-brands', 'ItemController@get_brands')->name('get-brands');
             Route::get('get-items', 'ItemController@get_items')->name('getitems');
             Route::get('get-items-flashsale', 'ItemController@get_items_flashsale')->name('getitems-flashsale');
             Route::post('food-variation-generate', 'ItemController@food_variation_generator')->name('food-variation-generate');

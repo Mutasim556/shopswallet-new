@@ -207,6 +207,7 @@
                     <tr>
                         <th class="border-0">{{translate('sl')}}</th>
                         <th class="border-0">{{translate('messages.name')}}</th>
+                        <th class="border-0">{{translate('messages.brand')}}</th>
                         <th class="border-0">{{translate('messages.category')}}</th>
                         @if (Config::get('module.current_module_type') != 'food')
                         <th class="border-0">{{translate('messages.quantity')}}</th>
@@ -234,6 +235,18 @@
                                     </div>
                                 </a>
                             </td>
+                            @if(Config::get('module.current_module_type')=='grocery')
+                            <td>
+                                <?php 
+                                    if($item->brand_id){
+                                        $brand = \App\Models\Brand::where('id',$item->brand_id)->first();
+                                        echo $brand->name;
+                                    }else {
+                                ?>
+                                    <span class="text-danger">{{ translate('messages.no_brand') }}</span>
+                                <?php }?>
+                            </td>
+                            @endif
                             <td title="{{ $item?->category?->name }}">
                             {{Str::limit($item->category?$item->category->name:translate('messages.category_deleted'),20,'...')}}
                             </td>

@@ -251,6 +251,9 @@ Route::group(['namespace' => 'Vendor', 'as' => 'vendor.'], function () {
             Route::get('toggle-settings-status/{store}/{status}/{menu}', 'BusinessSettingsController@store_status')->name('toggle-settings');
             Route::get('notification-setup', 'BusinessSettingsController@notification_index')->name('notification-setup');
             Route::get('notification-status-change/{key}/{type}', 'BusinessSettingsController@notification_status_change')->name('notification_status_change');
+
+             /** mutasim naib sumit */
+            Route::post('update-vendor-type','BusinessSettingsController@update_vendor_type')->name('update_vendor_type');
         });
 
         Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => ['module:bank_info' ,'subscription:bank_info']], function () {

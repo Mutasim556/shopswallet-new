@@ -51,6 +51,7 @@ use App\Exports\StoreOrderTransactionExport;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use App\Exports\StoreWithdrawTransactionExport;
 use App\Exports\StoreWiseWithdrawTransactionExport;
+use App\Models\VendorType;
 use Modules\Rental\Emails\ProviderWithdrawRequestMail;
 
 
@@ -63,6 +64,7 @@ class VendorController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'f_name' => 'required|max:100',
             'l_name' => 'nullable|max:100',
@@ -76,12 +78,7 @@ class VendorController extends Controller
             'minimum_delivery_time' => 'required',
             'maximum_delivery_time' => 'required',
             'delivery_time_type'=>'required',
-            'password' => ['required', Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised(),
-                function ($attribute, $value, $fail) {
-                    if (strpos($value, ' ') !== false) {
-                        $fail('The :attribute cannot contain white spaces.');
-                    }
-                },],
+            'password' => ['required', Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()],
             'zone_id' => 'required',
             // 'module_id' => 'required',
             'logo' => 'required',
@@ -136,18 +133,28 @@ class VendorController extends Controller
         $store->longitude = $request->longitude;
         $store->vendor_id = $vendor->id;
         $store->zone_id = $request->zone_id;
+        $store->type_one = $request->store_type_1?$request->store_type_1:'Local';
+        $store->type_two = $request->store_type_2?$request->store_type_2:'Retailer';
         $store->tax = $request->tax;
         $store->delivery_time = $request->minimum_delivery_time .'-'. $request->maximum_delivery_time.' '.$request->delivery_time_type;
         $store->module_id = Config::get('module.current_module_id');
         try {
             $store->save();
-            // $store->module->increment('stores_count');
+            $store->module->increment('stores_count');
             if(config('module.'.$store->module->module_type)['always_open'])
             {
                 StoreLogic::insert_schedule($store->id);
             }
             $default_lang = str_replace('_', '-', app()->getLocale());
             $data = [];
+
+            $storeType = new VendorType(); 
+            $storeType->vendor_id = $vendor->id;
+            $storeType->vendor_type = strtolower($store->type_two);
+            $storeType->module_id = $store->module_id;
+            $storeType->save();
+            
+            
             foreach ($request->lang as $index => $key) {
                 if($default_lang == $key && !($request->name[$index])){
                     if ($key != 'default') {
@@ -198,7 +205,7 @@ class VendorController extends Controller
         } catch (\Exception $ex) {
             info($ex->getMessage());
         }
-        Toastr::success(translate('messages.store_added_successfully'));
+        Toastr::success(translate('messages.store').translate('messages.added_successfully'));
         return redirect('admin/store/list');
     }
 

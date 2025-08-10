@@ -12,6 +12,7 @@ use App\Http\Requests\Admin\CategoryAddRequest;
 use App\Http\Requests\Admin\CategoryBulkExportRequest;
 use App\Http\Requests\Admin\CategoryBulkImportRequest;
 use App\Http\Requests\Admin\CategoryUpdateRequest;
+use App\Models\Category as ModelsCategory;
 use App\Services\CategoryService;
 use App\Traits\ImportExportTrait;
 use Brian2694\Toastr\Facades\Toastr;
@@ -21,6 +22,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -70,7 +72,12 @@ class CategoryController extends BaseController
 
     public function add(CategoryAddRequest $request): RedirectResponse
     {
+        // $request->merge([
+        //     'module_id'=>Config::get('module.current_module_id'),
+        // ]);
+        
         $parentCategory = $this->categoryRepo->getFirstWhere(params: ['id' => $request['parent_id']]);
+        // dd($parentCategory);
         $category = $this->categoryRepo->add(
             data: $this->categoryService->getAddData(
                 request: $request,
@@ -227,5 +234,10 @@ class CategoryController extends BaseController
             return Excel::download(new CategoryExport($data), Category::EXPORT_CSV);
         }
         return Excel::download(new CategoryExport($data), Category::EXPORT_XLSX);
+    }
+
+    function sub_sub_index()
+    {
+        return view('admin-views.category.sub-sub-index');
     }
 }

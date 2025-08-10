@@ -405,7 +405,14 @@
                                     <span class="text-truncate">{{ translate('messages.sub_category') }}</span>
                                 </a>
                             </li>
-
+                             <li
+                                    class="nav-item {{ Request::is('admin/category/add-sub-sub-category') ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ route('admin.category.add-sub-sub-category') }}"
+                                        title="add new sub sub category">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">Sub-Sub-Category</span>
+                                    </a>
+                                </li>
                         <li class="nav-item {{ Request::is('admin/category/bulk-import') ? 'active' : '' }}">
                             <a class="nav-link " href="{{ route('admin.category.bulk-import') }}" title="{{ translate('messages.bulk_import') }}">
                                 <span class="tio-circle nav-indicator-icon"></span>
@@ -482,6 +489,14 @@
                             <a class="nav-link " href="{{ route('admin.report.stock-report') }}" title="{{ translate('messages.Low_Stock_List') }}">
                                 <span class="tio-circle nav-indicator-icon"></span>
                                 <span class="text-truncate">{{ translate('messages.Low_Stock_List') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{ Request::is('admin/item/country-origin') || (Request::is('admin/item/country-origin/*') && (strpos(request()->fullUrl(), 'temp_product=1') == false && strpos(request()->fullUrl(), 'product_gellary=1') == false)) ? 'active' : '' }}">
+                            <a class="nav-link " href="{{ route('admin.item.country-origin') }}"
+                                title="{{ translate('messages.country-origin') }}">
+                                <span class="tio-circle nav-indicator-icon"></span>
+                                <span
+                                    class="text-truncate">{{ translate('messages.country_of_origin') }}</span>
                             </a>
                         </li>
                         {{-- @if (\App\CentralLogics\Helpers::get_mail_status('product_gallery')) --}}

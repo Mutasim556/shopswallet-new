@@ -650,6 +650,58 @@
                 </div>
             </div>
         @endif
+        @if (config('module.'.$store->module->module_type)['vendor_type'])
+        <div class="card mt-3" id="vendor_type_form">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <span class="card-header-icon">
+                        <i class="tio-date-range"></i>
+                    </span>
+                    <span>
+                        Vendor Type
+                    </span>
+                </h5>
+            </div>
+            <?php
+                $vendor_type = \App\Models\VendorType::where('vendor_id',Auth::guard('vendor')->user()->id)->first();
+                $this_vendor_type = $vendor_type?$vendor_type->vendor_type:'';
+
+                $this_vendor_brand = $vendor_type?explode(',',$vendor_type->brand_id):[];
+                
+            ?>
+            <div class="card-body" >
+                <form action="{{ route('vendor.business-settings.update_vendor_type') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="module_id" value="{{ $store->module->id }}">
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="">{{ translate('messages.select_vendor_type') }}</label>
+                            <select name="vendor_type" id="" class="form-control js-select2-custom" data-placeholder="{{translate('messages.select_vendor_type')}}" required>
+                                <option value="" >{{ translate('messages.select_please') }}</option>
+                                <option value="manufacturer" {{ $this_vendor_type=='manufacturer'?'selected':'' }}>{{ translate('messages.manufacturer') }}</option>
+                                <option value="wholeseller" {{ $this_vendor_type=='wholeseller'?'selected':'' }}>{{ translate('messages.wholeseller') }}</option>
+                                <option value="retailer" {{ $this_vendor_type=='retailer'?'selected':'' }}>{{ translate('messages.retailer') }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="">{{ translate('messages.select_brands') }}</label>
+                            <select name="brands[]" id="" class="form-control js-select2-custom" multiple data-placeholder="{{translate('messages.select_brands')}}" required>
+                                <?php
+                                    $brands = DB::table('brands')->where('module_id',$store->module->id)->get();
+                                ?>
+                                @foreach ($brands as $brand)
+                                    <option value="{{ $brand->id }}" {{ in_array($brand->id,$this_vendor_brand)?'selected':'' }}>{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-12 text-right">
+                            <button type="submit" class="btn btn-sm btn-primary">{{ translate('messages.save_changes') }}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @endif
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">

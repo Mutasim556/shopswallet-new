@@ -55,6 +55,7 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get(Category::NAME_LIST[URI], [CategoryController::class, 'getNameList'])->name('get-all');
             Route::group(['middleware' => ['module:category']], function () {
                 Route::get(Category::ADD[URI], [CategoryController::class, 'index'])->name('add');
+                Route::get('add-sub-sub-category', [CategoryController::class,'sub_sub_index'])->name('add-sub-sub-category');
                 Route::get(Category::UPDATE[URI].'/{id}', [CategoryController::class, 'getUpdateView'])->name('edit');
                 Route::post(Category::UPDATE[URI].'/{id}', [CategoryController::class, 'update'])->name('update');
                 Route::get(Category::PRIORITY[URI].'/{category}', [CategoryController::class, 'updatePriority'])->name('priority');

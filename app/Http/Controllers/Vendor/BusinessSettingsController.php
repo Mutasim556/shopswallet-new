@@ -12,7 +12,9 @@ use App\Models\BusinessSetting;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\StoreNotificationSetting;
+use App\Models\VendorType;
 use App\Models\Zone;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class BusinessSettingsController extends Controller
@@ -307,6 +309,24 @@ class BusinessSettingsController extends Controller
         $data?->save();
 
         Toastr::success(translate('messages.Notification_settings_updated'));
+        return back();
+    }
+
+    public function update_vendor_type(Request $data){
+        // dd($data->all());
+        
+        if(VendorType::where([['vendor_id',Auth::guard('vendor')->user()->id],['module_id',$data->module_id]])->first()){
+            $update_or_insert = VendorType::where([['vendor_id',Auth::guard('vendor')->user()->id],['module_id',$data->module_id]])->update(['vendor_type'=>$data->vendor_type,'brand_id'=>implode(',',$data->brands)]);
+        }else{
+            $update_or_insert = new VendorType();
+            $update_or_insert->vendor_id = Auth::guard('vendor')->user()->id;
+            $update_or_insert->module_id = $data->module_id;
+            $update_or_insert->vendor_type = $data->vendor_type;
+            $update_or_insert->brand_id = implode(',',$data->brands);
+            $update_or_insert->save();
+        }
+       
+        Toastr::success(translate('messages.vendor type updated success!'));
         return back();
     }
 }
