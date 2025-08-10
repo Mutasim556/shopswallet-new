@@ -12,6 +12,9 @@ use App\Models\OrderTransaction;
 use Illuminate\Support\Facades\DB;
 use Modules\Rental\Entities\Trips;
 use App\Http\Controllers\Controller;
+use App\Models\Store;
+use App\Models\VendorType;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -57,6 +60,37 @@ class DashboardController extends Controller
         $data['top_sell'] = $top_sell;
         $data['most_rated_items'] = $most_rated_items;
 
+        $stores = [];
+        if(Auth::guard('vendor')->user()->vendor_type!=null){
+            $stores['wholeseller']=0;
+            $stores['retailer']=0;
+            $wholesellers = VendorType::where([['module_id',Store::with('module')->where('id',Helpers::get_store_data()->id)->first()->module->id],['vendor_type','wholeseller']])->select('brand_id')->get();
+
+            // dd(Store::with('module')->where('id',Helpers::get_store_data()->id)->first()->module->id);
+            $retailers = VendorType::where([['module_id',Store::with('module')->where('id',Helpers::get_store_data()->id)->first()->module->id],['vendor_type','retailer']])->select('brand_id')->get();
+            // dd($retailers);
+            if(count($wholesellers)>0){
+                foreach(explode(',',Auth::guard('vendor')->user()->vendor_type->brand_id) as $brand){
+                    foreach($retailers as $retailer){
+                        if(in_array($brand,explode(',',$retailer->brand_id))){
+                            $stores['retailer'] = $stores['retailer']+1;
+                        }
+                    }
+                }
+            }
+            if(count($retailers)>0){
+                foreach(explode(',',Auth::guard('vendor')->user()->vendor_type->brand_id) as $brand){
+                    foreach($retailers as $retailer){
+                        if(in_array($brand,explode(',',$retailer->brand_id))){
+                            $stores['retailer'] = $stores['retailer']+1;
+                        }
+                    }
+                }
+            }
+
+
+        }
+
         if( Helpers::get_store_data()?->storeConfig?->minimum_stock_for_warning > 0){
             $items=  Item::where('stock' ,'<=' , Helpers::get_store_data()->storeConfig->minimum_stock_for_warning );
         } else{
@@ -70,7 +104,7 @@ class DashboardController extends Controller
             $item= $items->orderby('stock')->latest()->first();
         }
 
-        return view('vendor-views.dashboard', compact('data', 'earning', 'commission', 'params','out_of_stock_count','item'));
+        return view('vendor-views.dashboard', compact('data', 'earning', 'commission', 'params','out_of_stock_count','item','stores'));
     }
 
     public function store_data()

@@ -223,6 +223,7 @@ Route::group(['namespace' => 'Vendor', 'as' => 'vendor.'], function () {
         Route::group(['prefix' => 'order', 'as' => 'order.' , 'middleware' => ['module:order']], function () {
             Route::get('list/{status}', 'OrderController@list')->name('list');
             Route::put('status-update/{id}', 'OrderController@status')->name('status-update');
+            Route::post('search', 'OrderController@search')->name('search');
             Route::post('add-to-cart', 'OrderController@add_to_cart')->name('add-to-cart');
             Route::post('remove-from-cart', 'OrderController@remove_from_cart')->name('remove-from-cart');
             Route::get('update/{order}', 'OrderController@update')->name('update');
@@ -254,6 +255,12 @@ Route::group(['namespace' => 'Vendor', 'as' => 'vendor.'], function () {
 
              /** mutasim naib sumit */
             Route::post('update-vendor-type','BusinessSettingsController@update_vendor_type')->name('update_vendor_type');
+        });
+
+        /**mutasim naib sumit */
+
+        Route::group(['prefix' => 'my-stores', 'as' => 'my-stores.', 'middleware' => ['module:my_store']], function () {
+            Route::get('/{type?}','MystroreController@myShops')->name('my_stores');
         });
 
         Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => ['module:bank_info' ,'subscription:bank_info']], function () {

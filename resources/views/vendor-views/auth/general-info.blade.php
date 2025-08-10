@@ -370,6 +370,33 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-sm-6 col-lg-6">
+                                    <div class="form-group mb-0">
+                                        <label class="input-label" for="store_type_1">{{
+                                            translate('messages.store_type_1') }}<span class="input-label-secondary"></label>
+                                        <select name="store_type_1" class="js-data-example-ajax form-control"
+                                            data-placeholder="{{ translate('messages.select_store_type') }}"
+                                            id="store_type_1">
+                                            <option value="Local">{{ translate('messages.local') }}</option>
+                                            <option value="International">{{ translate('messages.international') }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-6">
+                                    <div class="form-group mb-0">
+                                        <label class="input-label" for="store_type_2">{{
+                                            translate('messages.store_type_2') }}<span class="input-label-secondary"></label>
+                                        <select name="store_type_2" class="js-data-example-ajax form-control"
+                                            data-placeholder="{{ translate('messages.select_store_type') }}"
+                                            id="store_type_2">
+                                            <option value="Retailer">{{ translate('messages.retailer') }}</option>
+                                            <option value="Wholeseller">{{ translate('messages.wholeseller') }}</option>
+                                            <option value="Manufacturer">{{ translate('messages.manufacturer') }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="card __card bg-F8F9FC mb-4">
                                 <div class="card-header">
                                     <div>

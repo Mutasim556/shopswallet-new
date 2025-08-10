@@ -16,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 use App\Models\SubscriptionPackage;
 use Gregwar\Captcha\CaptchaBuilder;
 use App\Mail\VendorSelfRegistration;
+use App\Models\VendorType;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -48,6 +49,7 @@ class VendorController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $status = BusinessSetting::where('key', 'toggle_store_registration')->first();
         if(!isset($status) || $status->value == '0')
         {
@@ -161,6 +163,8 @@ class VendorController extends Controller
         $store->zone_id = $request->zone_id;
         $store->module_id = $request->module_id;
         $store->pickup_zone_id = json_encode($request['pickup_zone_id']?? []) ;
+        $store->type_one = $request->store_type_1?$request->store_type_1:'Local';
+        $store->type_two = $request->store_type_2?$request->store_type_2:'Retailer';
         $store->tax = $request->tax;
         $store->delivery_time = $request->minimum_delivery_time .'-'. $request->maximum_delivery_time.' '.$request->delivery_time_type;
         $store->status = 0;
@@ -169,7 +173,11 @@ class VendorController extends Controller
 
         Helpers::add_or_update_translations(request: $request, key_data: 'name', name_field: 'name', model_name: 'Store', data_id: $store->id, data_value: $store->name);
         Helpers::add_or_update_translations(request: $request, key_data: 'address', name_field: 'address', model_name: 'Store', data_id: $store->id, data_value: $store->address);
-
+        $storeType = new VendorType();
+        $storeType->vendor_id = $vendor->id;
+        $storeType->vendor_type = strtolower($store->type_two);
+        $storeType->module_id = $store->module_id;
+        $storeType->save();
 
         try{
             $admin= Admin::where('role_id', 1)->first();
